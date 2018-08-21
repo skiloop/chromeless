@@ -9,6 +9,8 @@ import {
   PdfOptions,
   DeviceMetrics,
   ScreenshotOptions,
+  RequestFilter,
+  ResponseCallback,
 } from './types'
 import { getDebugOption } from './util'
 import { isArray } from 'util'
@@ -351,6 +353,14 @@ export default class Chromeless<T extends any> implements Promise<T> {
       files = [files]
     }
     this.queue.enqueue({ type: 'setFileInput', selector, files })
+    return this
+  }
+
+  onResponse(
+    callback: ResponseCallback,
+    filter?: RequestFilter,
+  ): Chromeless<T> {
+    this.queue.enqueue({ type: 'onResponse', callback, filter })
     return this
   }
 

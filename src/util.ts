@@ -11,6 +11,8 @@ import {
   Viewport,
   Headers,
   ScreenshotOptions,
+  ResponseCallback,
+  RequestFilter,
 } from './types'
 import * as CDP from 'chrome-remote-interface'
 import * as AWS from 'aws-sdk'
@@ -694,4 +696,28 @@ export async function uploadToS3(
     .promise()
 
   return `https://${getS3BucketUrl()}/${s3Path}`
+}
+
+export function onResponse(
+  client: Client,
+  callback: ResponseCallback,
+  filter: RequestFilter,
+) {
+  const { Network } = client
+  const map = new Map()
+  Network.requestWillBeSent(({ requestId, request }) => {
+    if (filter == null || filter(request)) {
+      map.set(requestId, request.url)
+    }
+  })
+
+  Network.loadingFinished(async ({ requestId }) => {
+    if (map.has(requestId)) {
+      const url = map.get(requestId)
+      const params = await Network.getResponseBody({ requestId })
+      const { body, base64Encoded } = params
+      map.delete(requestId)
+      callback(url, body, base64Encoded)
+    }
+  })
 }

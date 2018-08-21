@@ -54,6 +54,7 @@ Chromeless provides TypeScript typings.
 - [`setCookies(cookies: Cookie[])`](#api-setcookies-many)
 - [`deleteCookies(name: string)`](#api-deletecookies)
 - [`clearCookies()`](#api-clearcookies)
+- [`onResponse(callback: (url: string, body: string, base64ecoded: boolean) => void, (request: object) => boolean)`](#api-on-response)
 
 
 ---------------------------------------
@@ -769,4 +770,27 @@ __Example__
 
 ```js
 await chromeless.setFileInput('.uploader', '/User/Me/Documents/img.jpg')
+```
+---------------------------------------
+
+<a name="api-on-response" />
+
+### onResponse(callback: ResponseCallback, filter?: RequestFilter): Chromeless<T>
+
+action when request is successful with response
+
+__Arguments__
+- `callback` - response callback, a function in format of "(url: string, body: string, base64encoded: boolean) => void"
+- `filter` - request filter, a function to tell which request will callback is call on, action will call on all response if filter is not set
+
+__Example__
+
+```js
+const screenshot = await chromeless
+    .onResponse((url, body, base64encode) => {
+
+      console.log(url);
+      console.log(body);
+      console.log("base64encode: " + base64encode);
+    });
 ```

@@ -7,6 +7,8 @@ import {
   CookieQuery,
   PdfOptions,
   ScreenshotOptions,
+  ResponseCallback,
+  RequestFilter,
 } from '../types'
 import {
   nodeExists,
@@ -42,6 +44,7 @@ import {
   uploadToS3,
   eventToPromise,
   waitForPromise,
+  onResponse,
 } from '../util'
 
 export default class LocalRuntime {
@@ -123,6 +126,8 @@ export default class LocalRuntime {
         return this.clearInput(command.selector)
       case 'setFileInput':
         return this.setFileInput(command.selector, command.files)
+      case 'onResponse':
+        return this.onResponse(command.callback, command.filter)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -490,6 +495,10 @@ export default class LocalRuntime {
 
     await setFileInput(this.client, selector, files)
     this.log(`setFileInput() files ${files}`)
+  }
+
+  onResponse(callback: ResponseCallback, filter: RequestFilter): void {
+    onResponse(this.client, callback, filter)
   }
 
   private log(msg: string): void {

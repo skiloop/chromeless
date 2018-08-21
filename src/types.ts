@@ -196,6 +196,11 @@ export type Command =
       selector: string
       files: string[]
     }
+  | {
+      type: 'onResponse'
+      callback: ResponseCallback
+      filter?: RequestFilter
+    }
 
 export type Headers = Record<string, string>
 
@@ -269,3 +274,10 @@ export interface Viewport {
   height: number
   scale: number
 }
+
+export type ResponseCallback = (
+  url: string,
+  body: string,
+  base64ecoded: boolean,
+) => void
+export type RequestFilter = (request: object) => boolean
