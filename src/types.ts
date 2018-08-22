@@ -278,6 +278,6 @@ export interface Viewport {
 export type ResponseCallback = (
   url: string,
   body: string,
-  base64ecoded: boolean,
+  base64encoded: boolean,
 ) => void
 export type RequestFilter = (request: object) => boolean
