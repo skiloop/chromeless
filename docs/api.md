@@ -35,6 +35,7 @@ Chromeless provides TypeScript typings.
 - [`refresh()`](#api-refresh) - Not implemented yet
 - [`mousedown(selector: string)`](#api-mousedown)
 - [`mouseup(selector: string)`](#api-mouseup)
+- [`mousemove(x1: number, y1: number,x2: number, y2: number, selector?: string, n?: number, interval?: number)`](#api-mousemove)
 - [`scrollTo(x: number, y: number)`](#api-scrollto)
 - [`scrollToElement(selector: string)`](#api-scrolltoelement)
 - [`setHtml(html: string)`](#api-sethtml)
@@ -334,6 +335,29 @@ __Example__
 
 ```js
 await chromeless.mouseup('#placeholder')
+```
+
+---------------------------------------
+
+<a name="api-mousemove" />
+
+### mousemove(x1: number, y1: number,x2: number, y2: number, selector?: string, n?: number, interval?: number): Chromeless<T>
+
+Send mouseup event on something in the DOM.
+
+__Arguments__
+- `x1` - x offset of start position
+- `y1` - y offset of start position
+- `x2` - x offset of end position
+- `y2` - end y offset of end position
+- `selector` - DOM selector for element to send mouseup event. offsets are relative to this specified element if selector is set, otherwise absolute
+- `n` - number of steps, default 10
+- `interval` - time of each step, default 100ms
+
+__Example__
+
+```js
+await chromeless.mousemove(10,10,400,100,'#board')
 ```
 
 ---------------------------------------

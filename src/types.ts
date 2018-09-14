@@ -196,6 +196,16 @@ export type Command =
       selector: string
       files: string[]
     }
+  | {
+      type: 'mousemove'
+      from_x: number
+      from_y: number
+      to_x: number
+      to_y: number
+      selector?: string
+      steps?: number
+      interval?: number
+    }
 
 export type Headers = Record<string, string>
 

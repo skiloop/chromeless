@@ -170,6 +170,28 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
+  mousemove(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    selector?: string,
+    n?: number,
+    interval?: number,
+  ): Chromeless<T> {
+    this.queue.enqueue({
+      type: 'mousemove',
+      from_x: x1,
+      from_y: y1,
+      to_x: x2,
+      to_y: y2,
+      selector: selector,
+      steps: n,
+      interval,
+    })
+    return this
+  }
+
   mouseover(): Chromeless<T> {
     throw new Error('Not implemented yet')
   }

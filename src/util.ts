@@ -444,6 +444,60 @@ export async function mousedown(
   })
 }
 
+export async function mousemove(
+  client: Client,
+  scale: number,
+  x: number,
+  y: number,
+) {
+  const { Input } = client
+
+  const options = {
+    x: Math.round(x * scale),
+    y: Math.round(y * scale),
+  }
+
+  await Input.dispatchMouseEvent({
+    ...options,
+    type: 'mouseMoved',
+  })
+}
+
+export async function moveTo(
+  client: Client,
+  scale: number,
+  from_x: number,
+  from_y: number,
+  to_x: number,
+  to_y: number,
+  steps: number,
+  interval: number,
+) {
+  const step = interval
+  const pos = {
+    x: from_x,
+    y: from_y,
+    x_step: (to_x - from_x) / steps,
+    y_step: (to_y - from_y) / steps,
+  }
+  const end = new Date().getTime() + interval * steps
+
+  return new Promise<void>(resolve => {
+    const interval = setInterval(async () => {
+      if (new Date().getTime() > end) {
+        clearInterval(interval)
+        resolve()
+      }
+
+      pos.x += pos.x_step
+      pos.y += pos.y_step
+
+      console.log(`move event at (${pos.x},${pos.y})`)
+      await mousemove(client, scale, pos.x, pos.y)
+    }, step)
+  })
+}
+
 export async function mouseup(client: Client, selector: string, scale: number) {
   const clientRect = await getClientRect(client, selector)
   const { Input } = client

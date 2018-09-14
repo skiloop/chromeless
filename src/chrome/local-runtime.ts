@@ -34,6 +34,7 @@ import {
   version,
   mousedown,
   mouseup,
+  moveTo,
   focus,
   clearInput,
   setFileInput,
@@ -42,6 +43,7 @@ import {
   uploadToS3,
   eventToPromise,
   waitForPromise,
+  getClientRect,
 } from '../util'
 
 export default class LocalRuntime {
@@ -117,6 +119,16 @@ export default class LocalRuntime {
         return this.mousedown(command.selector)
       case 'mouseup':
         return this.mouseup(command.selector)
+      case 'mousemove':
+        return this.moveTo(
+          command.from_x,
+          command.from_y,
+          command.to_x,
+          command.to_y,
+          command.selector,
+          command.steps,
+          command.interval,
+        )
       case 'focus':
         return this.focus(command.selector)
       case 'clearInput':
@@ -270,6 +282,58 @@ export default class LocalRuntime {
     const { scale } = this.chromelessOptions.viewport
     await mouseup(this.client, selector, scale)
     this.log(`Mouseup on ${selector}`)
+  }
+
+  private async moveTo(
+    from_x: number,
+    from_y: number,
+    to_x: number,
+    to_y: number,
+    selector?: string,
+    steps?: number,
+    interval?: number,
+  ): Promise<void> {
+    if (selector !== undefined && this.chromelessOptions.implicitWait) {
+      this.log(`moveTo(): Waiting for ${selector}`)
+      await waitForNode(
+        this.client,
+        selector,
+        this.chromelessOptions.waitTimeout,
+      )
+    }
+    if (selector !== undefined) {
+      const exists = await nodeExists(this.client, selector)
+      if (!exists) {
+        throw new Error(
+          `mouseup(): node for selector ${selector} doesn't exist`,
+        )
+      }
+      const clientRect = await getClientRect(this.client, selector)
+      from_x += clientRect.left
+      from_y += clientRect.top
+      to_x += clientRect.left
+      to_y += clientRect.top
+    }
+
+    const { scale } = this.chromelessOptions.viewport
+    if (interval === undefined) {
+      interval = 100
+    }
+    if (steps === undefined) {
+      steps = 10
+    }
+
+    await moveTo(
+      this.client,
+      scale,
+      from_x,
+      from_y,
+      to_x,
+      to_y,
+      steps,
+      interval,
+    )
+    this.log(`MoveTo on ${selector} to (${to_x},${to_y})`)
   }
 
   private async setHtml(html: string): Promise<void> {
