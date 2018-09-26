@@ -711,6 +711,12 @@ export function onResponse(
     }
   })
 
+  Network.loadingFailed(({ requestId }) => {
+    if (map.has(requestId)) {
+      map.delete(requestId)
+    }
+  })
+
   Network.loadingFinished(async ({ requestId }) => {
     if (map.has(requestId)) {
       const url = map.get(requestId)
