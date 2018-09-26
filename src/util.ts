@@ -103,6 +103,25 @@ export async function waitForNode(
   }
 }
 
+export async function waitFn(fn: any, args: any[]): Promise<void> {
+  const result = await fn(...args)
+
+  if (result) {
+    return new Promise<void>((resolve, reject) => {
+      const interval = setInterval(async () => {
+        const result = await fn(...args)
+
+        if (result) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 500)
+    })
+  } else {
+    return
+  }
+}
+
 export async function wait(timeout: number): Promise<void> {
   return new Promise<void>((resolve, reject) => setTimeout(resolve, timeout))
 }

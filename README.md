@@ -1,4 +1,4 @@
-*This project is deprecated in favor for [Puppeteer](https://github.com/GoogleChrome/puppeteer). 
+*This project is deprecated in favor for [Puppeteer](https://github.com/GoogleChrome/puppeteer).
 Thanks to all the contributors who made this project possible.*
 
 # Chromeless
@@ -156,7 +156,7 @@ const chromeless = new Chromeless({
 - [`click(selector: string, x?: number, y?: number)`](docs/api.md#api-click)
 - [`wait(timeout: number)`](docs/api.md#api-wait-timeout)
 - [`wait(selector: string)`](docs/api.md#api-wait-selector)
-- [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
+- [`wait(fn: (...args: any[]) => boolean, ...args: any[])`]
 - [`clearCache()`](docs/api.md#api-clearcache)
 - [`clearStorage(origin: string, storageTypes: string)`](docs/api.md#api-clearstorage)
 - [`focus(selector: string)`](docs/api.md#api-focus)

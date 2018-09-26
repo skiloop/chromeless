@@ -12,6 +12,7 @@ import {
   nodeExists,
   wait,
   waitForNode,
+  waitFn,
   click,
   evaluate,
   screenshot,
@@ -185,6 +186,12 @@ export default class LocalRuntime {
     this.log(`Waiting for ${selector} ${waitTimeout}`)
     await waitForNode(this.client, selector, waitTimeout)
     this.log(`Waited for ${selector}`)
+  }
+
+  private async waitFn(fn: any, args: any[]): Promise<void> {
+    this.log(`Waiting for fn`)
+    await waitFn(fn, args)
+    this.log(`Waited for fn`)
   }
 
   private async click(selector: string, x?: number, y?: number): Promise<void> {
