@@ -52,11 +52,16 @@ export interface ChromelessOptions {
   }
   launchChrome?: boolean // auto-launch chrome (local) `true`
   cdp?: CDPOptions
+  networkLogger?: {
+    onLoadingFinished?: OnLoadingFinished
+    onLoadingFailed?: OnLoadingFailed
+  }
   remote?: RemoteOptions | boolean
 }
 
 export interface Chrome {
   process<T extends any>(command: Command): Promise<T>
+
   close(): Promise<void>
 }
 
@@ -269,3 +274,19 @@ export interface Viewport {
   height: number
   scale: number
 }
+
+export type OnLoadingFinished = (
+  url: string,
+  timestamp: number,
+  body: string,
+  base64encoded: boolean,
+) => void
+
+export type OnLoadingFailed = (
+  url: string,
+  timestamp: number,
+  errorText: string,
+  resourceType: string,
+  canceled: boolean | undefined,
+  blockedReason: string | undefined,
+) => void

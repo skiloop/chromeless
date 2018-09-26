@@ -48,10 +48,65 @@ export default class LocalRuntime {
   private client: Client
   private chromelessOptions: ChromelessOptions
   private userAgentValue: string
+  private requestMap: Map<string, string>
 
   constructor(client: Client, chromelessOptions: ChromelessOptions) {
     this.client = client
     this.chromelessOptions = chromelessOptions
+    this.requestMap = new Map<string, string>()
+    this.intNetworkEvent()
+  }
+
+  intNetworkEvent(): void {
+    if (this.chromelessOptions.networkLogger) {
+      const { Network } = this.client
+      Network.enable()
+      Network.requestWillBeSent(({ requestId, request }) => {
+        this.requestMap.set(requestId, request.url)
+      })
+
+      Network.loadingFailed(
+        ({
+          requestId,
+          timestamp,
+          type,
+          errorText,
+          canceled,
+          blockedReason,
+        }) => {
+          if (this.requestMap.has(requestId)) {
+            if (this.chromelessOptions.networkLogger.onLoadingFailed) {
+              this.chromelessOptions.networkLogger.onLoadingFailed(
+                this.requestMap.get(requestId),
+                timestamp,
+                type,
+                errorText,
+                canceled,
+                blockedReason,
+              )
+            }
+            this.requestMap.delete(requestId)
+          }
+        },
+      )
+
+      Network.loadingFinished(async ({ requestId, timestamp }) => {
+        if (this.requestMap.has(requestId)) {
+          if (this.chromelessOptions.networkLogger.onLoadingFinished) {
+            const url = this.requestMap.get(requestId)
+            const params = await Network.getResponseBody({ requestId })
+            const { body, base64Encoded } = params
+            this.chromelessOptions.networkLogger.onLoadingFinished(
+              url,
+              timestamp,
+              body,
+              base64Encoded,
+            )
+          }
+        }
+        this.requestMap.delete(requestId)
+      })
+    }
   }
 
   async run(command: Command): Promise<any> {

@@ -12,6 +12,9 @@ Chromeless provides TypeScript typings.
 - `waitTimeout: number` Time in ms to wait for element to appear — Default: `10000`
 - `scrollBeforeClick: boolean` Scroll to element before clicking, usefull if element is outside of viewport — Default: `false`
 - `viewport: any` Viewport dimensions — Default: `{width: 1440, height: 900, scale: 1}`
+- `networkLogger: any` network logger to log network request, two log functions: `onLoadingFinished, onLoadingFailed`
+- `networkLogger.onLoadingFinished: (url: string, timestamp: number, body: string, base64encoded: boolean)=>any` log function on network loading finished
+- `networkLogger.onLoadingFailed: (url: string, timestamp: number, errorText: string, resourceType: string, canceled: boolean|undefined, blockedReason: string|undefined)=>any` log function on network loading failed
 - `launchChrome: boolean` Auto-launch chrome (local) — Default: `true`
 - `cdp: CDPOptions` Chome Debugging Protocol Options — Default: `{host: 'localhost', port: 9222, secure: false, closeTab: true}`
 
